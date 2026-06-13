@@ -1,0 +1,21 @@
+:root {
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  color: #2d2118;
+  background: #f7f1e8;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
