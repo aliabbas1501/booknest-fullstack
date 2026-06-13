@@ -5,8 +5,11 @@ import BookCard from "../components/BookCard";
 function Home() {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const booksPerPage = 3;
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -14,7 +17,9 @@ function Home() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/books`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/books`,
+        );
 
         if (!response.ok) {
           throw new Error("Failed to load books");
@@ -42,11 +47,18 @@ function Home() {
     );
   });
 
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+
+  const startIndex = (currentPage - 1) * booksPerPage;
+  const endIndex = startIndex + booksPerPage;
+
+  const visibleBooks = filteredBooks.slice(startIndex, endIndex);
+
   const allReviews = books.flatMap((book) =>
     book.reviews.map((review) => ({
       ...review,
       bookTitle: book.title,
-    }))
+    })),
   );
 
   const featuredReviews = allReviews.slice(0, 3);
@@ -69,7 +81,10 @@ function Home() {
             type="text"
             placeholder="Search books, authors, or categories..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
           />
         </div>
 
@@ -82,11 +97,43 @@ function Home() {
         )}
 
         {!loading && !error && filteredBooks.length > 0 && (
-          <div className="books-grid">
-            {filteredBooks.map((book) => (
-              <BookCard book={book} key={book._id} />
-            ))}
-          </div>
+          <>
+            <div className="books-summary">
+              <span>
+                Showing {startIndex + 1} to{" "}
+                {Math.min(endIndex, filteredBooks.length)} of{" "}
+                {filteredBooks.length} books
+              </span>
+            </div>
+
+            <div className="books-grid">
+              {visibleBooks.map((book) => (
+                <BookCard book={book} key={book._id} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="pagination">
+                <button
+                  onClick={() => setCurrentPage((page) => page - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+
+                <button
+                  onClick={() => setCurrentPage((page) => page + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
 
