@@ -1,5 +1,19 @@
 # BookNest
 
+## Preview
+
+### Homepage
+
+![BookNest Homepage](screenshots/home.png)
+
+### Book Collection
+
+![BookNest Books Section](screenshots/books.png)
+
+### Book Details
+
+![BookNest Details Page](screenshots/details.png)
+
 BookNest is a full stack book review website built with React, Node.js, Express, MongoDB, and Mongoose. The website allows users to browse books, search by title, author, or category, open individual book details, and submit reader reviews that are stored permanently in MongoDB.
 
 ## Features
